@@ -1,4 +1,4 @@
-from Best_Buy.Classes import products, store
+from _Classes import products, store
 
 
 def show_menu(menu):
