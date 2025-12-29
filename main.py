@@ -2,6 +2,7 @@ from _Classes import products, store
 
 
 def show_menu(menu):
+    """ Pint a Menu, based on a dictionary"""
     print("\n\tStore Menu\n\t----------")
     for num, choice in menu.items():
         print(f"{num}. {choice[0]}")
@@ -24,6 +25,7 @@ def list_products(store_obj):
 
 
 def show_amount(store_obj):
+    """ Print out the sum of all available product.quantities"""
     if not store_obj:
         print("Nothing to show")
     else:
@@ -32,6 +34,12 @@ def show_amount(store_obj):
 
 
 def make_order(store_obj):
+    """
+    Show Products name, price, quantity.
+    Ask for a number from the menu and an amount to buy,
+    if the user inputs 2 empty strings, the order is made.
+    prints out the total_price of the order.
+    """
     shopping_list = []
     products = store_obj.get_all_products()
     while True:
@@ -60,6 +68,11 @@ def make_order(store_obj):
 
 
 def start(store_obj):
+    """
+    Show a store-menu and let the user choose one option.
+    Execute the function from the chosen menu_choice,
+    until the user quits the menu.
+    """
     menu = {
         1: ("List all products in store", list_products),
         2: ("Show total amount in store", show_amount),
@@ -84,13 +97,13 @@ def start(store_obj):
 
 
 def main():
-
-    # setup initial stock of inventory
+    """ Setup initial stock of inventory and start() the store_menu """
     product_list = [products.Product("MacBook Air M2", price=1450, quantity=100),
                     products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
                     products.Product("Google Pixel 7", price=500, quantity=250)
                     ]
     best_buy = store.Store(product_list)
+    # Enter store-menu of Store-class-object
     start(best_buy)
 
 
