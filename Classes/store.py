@@ -44,5 +44,5 @@ class Store:
                     if product.get_quantity() == 0:
                         self.remove_product(product)
             except TypeError or ValueError:
-                print(f"{product} could not be found in store.")
+                print(f"{product.get_name()} could not be found in store.")
         return total_price

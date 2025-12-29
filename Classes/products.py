@@ -21,11 +21,11 @@ class Product:
 
     def set_quantity(self, quantity):
         try:
-            if not quantity:
+            if not quantity or quantity < 1:
                 raise ValueError
             self.quantity = quantity
         except ValueError:
-            print("Integer expected!")
+            print("Valid Integer expected!")
 
     def set_price(self, price):
         try:
@@ -59,6 +59,8 @@ class Product:
     def buy(self, quantity):
         if self.quantity >= quantity:
             try:
+                if quantity < 1:
+                    raise ValueError
                 self.quantity -= quantity
                 if self.quantity == 0:
                     self.deactivate()
