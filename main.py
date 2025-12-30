@@ -43,7 +43,7 @@ def make_order(store_obj):
     prints out the total_price of the order.
     """
     shopping_list = []
-    products = store_obj.get_all_products()
+    all_products = store_obj.get_all_products()
     while True:
         list_products(store_obj)
         print("When you want to finish order, enter empty text.")
@@ -54,18 +54,23 @@ def make_order(store_obj):
             break
         try:
             amount = int(amount)
-            if amount < 0:
+            if amount < 1:
                 raise Exception
-            product_choice = products[int(user_choice)-1]
-            product_quantity = product_choice.get_quantity()
-            if amount > product_quantity:
-                print(f"Error: Only {product_quantity} Items left in stock.")
-                continue
+            product_choice = all_products[int(user_choice) - 1]
+            if not isinstance(product_choice, products.NonStockedProduct):
+                product_quantity = product_choice.get_quantity()
+                if amount > product_quantity:
+                    print(f"Error: Only {product_quantity} Items left in stock.")
+                    continue
+                elif isinstance(product_choice, products.LimitedProduct) and amount > product_choice.get_max():
+                    print(f"Error: Can't choose more than {product_choice.get_max()} of this Product per purchase.")
+                    continue
+                product_choice.set_quantity(product_quantity - amount)
             shopping_list.append((product_choice, amount))
-            product_choice.set_quantity(product_quantity - amount)
             print(f"Added {product_choice.get_name()} {amount} times.")
         except Exception:
             print("Error adding product!")
+            continue
     print(f"Order made! Total payment: ${total_price}")
 
 
@@ -100,9 +105,12 @@ def start(store_obj):
 
 def main():
     """ Setup initial stock of inventory and start() the store_menu """
+    # setup initial stock of inventory
     product_list = [products.Product("MacBook Air M2", price=1450, quantity=100),
                     products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
-                    products.Product("Google Pixel 7", price=500, quantity=250)
+                    products.Product("Google Pixel 7", price=500, quantity=250),
+                    products.NonStockedProduct("Windows License", price=125),
+                    products.LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
                     ]
     best_buy = store.Store(product_list)
     # Enter store-menu of Store-class-object
