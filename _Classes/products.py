@@ -21,7 +21,7 @@ class Product:
 
     def set_quantity(self, quantity):
         try:
-            if not quantity or quantity < 1:
+            if not quantity or quantity < 0:
                 raise ValueError
             self.quantity = quantity
         except ValueError:
