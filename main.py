@@ -1,3 +1,5 @@
+import sys
+
 from _Classes import products, store
 
 
@@ -92,7 +94,7 @@ def start(store_obj):
         except Exception:
             print("Error with your choice! Try again!")
     print("\nBye!")
-    quit()
+    sys.exit()
 
 
 
