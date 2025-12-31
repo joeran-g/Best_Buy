@@ -1,9 +1,13 @@
+from Best_Buy._Classes import promotions
+
+
 class Product:
     def __init__(self, name, price, quantity):
         try:
             self._name = str(name)
             self._price = float(price)
             self._quantity = int(quantity)
+            self.__promotion = None
         except TypeError:
             print("Missing inputs!")
         except ValueError:
@@ -17,6 +21,13 @@ class Product:
 
     def get_price(self):
         return self._price
+
+    def get_promotion(self):
+        return self.__promotion
+
+    def set_promotion(self, promotion):
+        if isinstance(promotion, promotions.Promotion):
+            self.__promotion = promotion
 
     def set_quantity(self, quantity):
         try:
@@ -53,22 +64,29 @@ class Product:
             print("No items in the Inventory. Please add to the inventory before activating!")
 
     def show(self):
-        print(f"{self._name}, Price: {self._price}, Quantity: {self._quantity}")
+        promotion = self.get_promotion()
+        if self.__promotion:
+            print(f"{self._name}, Price: {self._price}, Quantity: {self._quantity}\n ({promotion.get_name()})")
+        else:
+            print(f"{self._name}, Price: {self._price}, Quantity: {self._quantity}")
 
     def buy(self, quantity):
-        if self._quantity >= quantity:
-            try:
-                if quantity < 1:
-                    raise ValueError
-                self._quantity -= quantity
-                if self._quantity == 0:
-                    self.deactivate()
+        try:
+            if quantity < 1:
+                raise ValueError
+            new_quantity = self._quantity - quantity
+            self.set_quantity(new_quantity)
+            if self._quantity == 0:
+                self.deactivate()
+            promotion = self.get_promotion()
+            if promotion:
+                product = self
+                discounted_price = promotion.apply_promotion(product=product, quantity=quantity)
+                return discounted_price
+            else:
                 return round(self._price * quantity, 2)
-            except ValueError or TypeError:
-                print("Please enter a valid integer")
-        else:
-            print(f"Not enough left in stock. remaining: {self._quantity}")
-            return None
+        except ValueError or TypeError:
+            print("Please enter a valid amount!")
 
 
 class NonStockedProduct(Product):
@@ -77,7 +95,11 @@ class NonStockedProduct(Product):
         self._name = name
 
     def show(self):
-        print(f"{self._name}, Price: {self._price}")
+        promotion = self.get_promotion()
+        if promotion:
+            print(f"{self._name}, Price: {self._price}\n ({promotion.get_name()})")
+        else:
+            print(f"{self._name}, Price: {self._price}")
 
     def get_quantity(self):
         return 0
@@ -87,11 +109,14 @@ class NonStockedProduct(Product):
 
     def buy(self, quantity):
         try:
-            if quantity < 1:
-                raise ValueError
-            return self._price * int(quantity)
-        except TypeError or ValueError:
-            print("Error, No valid amount!")
+            promotion = self.get_promotion()
+            if promotion:
+                product = self
+                return promotion.apply_promotion(product=product, quantity=quantity)
+            else:
+                return round(self._price * quantity, 2)
+        except ValueError or TypeError:
+            print("Please enter a valid amount!")
 
 
 class LimitedProduct(Product):
@@ -100,23 +125,18 @@ class LimitedProduct(Product):
         self.__maximum = maximum
 
     def show(self):
-        print(f"{self._name}, Price: {self._price}, Quantity: {self._quantity}, maximum: {self.__maximum}")
+        promotion = self.get_promotion()
+        if promotion:
+            print(f"{self._name}, Price: {self._price}, Quantity: {self._quantity}, maximum: {self.__maximum}\n ({promotion.get_name()})")
+        else:
+            print(f"{self._name}, Price: {self._price}, Quantity: {self._quantity}, maximum: {self.__maximum}")
 
     def get_max(self):
         return self.__maximum
 
     def buy(self, quantity):
         if self.__maximum >= quantity > 1:
-            try:
-                if quantity < 1:
-                    raise ValueError
-                new_quantity = self._quantity - quantity
-                self.set_quantity(new_quantity)
-                if self._quantity == 0:
-                    self.deactivate()
-                return round(self._price * quantity, 2)
-            except ValueError or TypeError:
-                print("Please enter a valid amount!")
+            return super().buy(quantity)
         else:
             print(f"Only {self.__maximum} allowed, per purchase!")
             return None

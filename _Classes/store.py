@@ -39,10 +39,9 @@ class Store:
         total_price = 0.0
         for product, quantity in shopping_list:
             try:
-                if product in self.products:
-                    total_price += product.buy(quantity)
-                    if product.get_quantity() == 0:
-                        self.remove_product(product)
+                total_price += product.buy(quantity)
+                if product.get_quantity() == 0:
+                    self.remove_product(product)
             except TypeError or ValueError:
                 print(f"{product.get_name()} could not be found in store.")
         return total_price

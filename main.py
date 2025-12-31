@@ -1,5 +1,6 @@
 import sys
 
+from Best_Buy._Classes import promotions
 from _Classes import products, store
 
 
@@ -53,6 +54,7 @@ def make_order(store_obj):
             total_price = store_obj.order(shopping_list)
             break
         try:
+            user_choice = int(user_choice)
             amount = int(amount)
             if amount < 1:
                 raise Exception
@@ -112,8 +114,18 @@ def main():
                     products.NonStockedProduct("Windows License", price=125),
                     products.LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
                     ]
-    best_buy = store.Store(product_list)
+
+    # Create promotion catalog
+    second_half_price = promotions.SecondHalfPrice("Second Half price!")
+    third_one_free = promotions.ThirdOneFree("Third One Free!")
+    thirty_percent = promotions.PercentDiscount("30% off!", percent=30)
+
+    # Add promotions to products
+    product_list[0].set_promotion(second_half_price)
+    product_list[1].set_promotion(third_one_free)
+    product_list[3].set_promotion(thirty_percent)
     # Enter store-menu of Store-class-object
+    best_buy = store.Store(product_list)
     start(best_buy)
 
 
