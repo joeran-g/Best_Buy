@@ -1,3 +1,6 @@
+from Best_Buy._Classes import products
+
+
 class Store:
     def __init__(self, products=None):
         if products is None:
@@ -6,6 +9,12 @@ class Store:
             self.products = products
         except ValueError:
             print("Enter a valid Product!")
+
+    def __contains__(self, item:products.Product):
+        return item in self.products
+
+    def __add__(self, other):
+        return self.products.append(other.products)
 
     def add_product(self, product):
         try:

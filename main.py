@@ -22,7 +22,10 @@ def list_products(store_obj):
     print("----------")
     for item in inventory:
         print(counter, end=". ")
-        item.show()
+        if item.is_active():
+            print(item)
+        else:
+            print("--Out of Stock!--")
         counter += 1
     print("----------")
 

@@ -13,6 +13,19 @@ class Product:
         except ValueError:
             print("Wrong values!")
 
+    def __str__(self):
+        promotion = self.get_promotion()
+        if self.__promotion:
+            return f"{self._name}, Price: {self._price}, Quantity: {self._quantity}\n ({promotion.get_name()})"
+        else:
+            return f"{self._name}, Price: {self._price}, Quantity: {self._quantity}"
+
+    def __lt__(self, other):
+        return self._price < other._price
+
+    def __gt__(self, other):
+        return self._price > other._price
+
     def get_quantity(self):
         return self._quantity
 
@@ -31,9 +44,11 @@ class Product:
 
     def set_quantity(self, quantity):
         try:
-            if not quantity or quantity < 0:
+            if quantity < 0:
                 raise ValueError
             self._quantity = quantity
+            if self._quantity == 0:
+                self.deactivate()
         except ValueError:
             print("Valid Integer expected!")
 
@@ -63,21 +78,12 @@ class Product:
         else:
             print("No items in the Inventory. Please add to the inventory before activating!")
 
-    def show(self):
-        promotion = self.get_promotion()
-        if self.__promotion:
-            print(f"{self._name}, Price: {self._price}, Quantity: {self._quantity}\n ({promotion.get_name()})")
-        else:
-            print(f"{self._name}, Price: {self._price}, Quantity: {self._quantity}")
-
     def buy(self, quantity):
         try:
-            if quantity < 1:
+            if quantity < 1 or quantity > self._quantity:
                 raise ValueError
             new_quantity = self._quantity - quantity
             self.set_quantity(new_quantity)
-            if self._quantity == 0:
-                self.deactivate()
             promotion = self.get_promotion()
             if promotion:
                 product = self
@@ -94,12 +100,12 @@ class NonStockedProduct(Product):
         super().__init__(name, price, quantity=0)
         self._name = name
 
-    def show(self):
+    def __str__(self):
         promotion = self.get_promotion()
         if promotion:
-            print(f"{self._name}, Price: {self._price}\n ({promotion.get_name()})")
+            return f"{self._name}, Price: {self._price}\n ({promotion.get_name()})"
         else:
-            print(f"{self._name}, Price: {self._price}")
+            return f"{self._name}, Price: {self._price}"
 
     def get_quantity(self):
         return 0
@@ -124,12 +130,12 @@ class LimitedProduct(Product):
         super().__init__(name, price, quantity)
         self.__maximum = maximum
 
-    def show(self):
+    def __str__(self):
         promotion = self.get_promotion()
         if promotion:
-            print(f"{self._name}, Price: {self._price}, Quantity: {self._quantity}, maximum: {self.__maximum}\n ({promotion.get_name()})")
+            return f"{self._name}, Price: {self._price}, Quantity: {self._quantity}, maximum: {self.__maximum}\n ({promotion.get_name()})"
         else:
-            print(f"{self._name}, Price: {self._price}, Quantity: {self._quantity}, maximum: {self.__maximum}")
+            return f"{self._name}, Price: {self._price}, Quantity: {self._quantity}, maximum: {self.__maximum}"
 
     def get_max(self):
         return self.__maximum
