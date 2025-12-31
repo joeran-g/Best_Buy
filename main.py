@@ -1,7 +1,6 @@
 import sys
 
-from Best_Buy._Classes import promotions
-from _Classes import products, store
+from Best_Buy.Classes import promotions, products, store
 
 
 def show_menu(menu):
@@ -53,6 +52,8 @@ def make_order(store_obj):
         print("When you want to finish order, enter empty text.")
         user_choice = input("Which product # do you want? ")
         amount = input("What amount do you want? ")
+        product_quantity = None
+        product_choice = None
         if not user_choice and not amount:
             total_price = store_obj.order(shopping_list)
             break
@@ -75,6 +76,8 @@ def make_order(store_obj):
             print(f"Added {product_choice.get_name()} {amount} times.")
         except Exception:
             print("Error adding product!")
+            if product_quantity:
+                product_choice.set_quantity(product_quantity)
             continue
     print(f"Order made! Total payment: ${total_price}")
 

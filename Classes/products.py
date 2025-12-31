@@ -1,4 +1,4 @@
-from Best_Buy._Classes import promotions
+from Best_Buy.Classes import promotions
 
 
 class Product:
@@ -49,6 +49,8 @@ class Product:
             self._quantity = quantity
             if self._quantity == 0:
                 self.deactivate()
+            if self._quantity > 0 and not self.is_active():
+                self.activate()
         except ValueError:
             print("Valid Integer expected!")
 

@@ -1,4 +1,4 @@
-from Best_Buy._Classes import products
+from Best_Buy.Classes import products
 
 
 class Store:
@@ -48,8 +48,9 @@ class Store:
         total_price = 0.0
         for product, quantity in shopping_list:
             try:
-                total_price += product.buy(quantity)
-                if product.get_quantity() == 0:
+                product.set_quantity(product.get_quantity() + quantity)
+                total_price += product.buy(int(quantity))
+                if not product.is_active():
                     self.remove_product(product)
             except TypeError or ValueError:
                 print(f"{product.get_name()} could not be found in store.")
