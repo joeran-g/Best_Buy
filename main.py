@@ -1,6 +1,6 @@
 import sys
 
-from Best_Buy.Classes import promotions, products, store
+from Classes import promotions, products, store
 
 
 def show_menu(menu):
@@ -92,7 +92,7 @@ def start(store_obj):
         1: ("List all products in store", list_products),
         2: ("Show total amount in store", show_amount),
         3: ("Make an order", make_order),
-        4: ("Quit", quit)
+        4: ("Quit", exit)
         }
     print("\n\n-------Welcome to the Store!-------\n")
     user_choice = None
@@ -102,6 +102,8 @@ def start(store_obj):
             user_choice = int(input("Please choose a number: "))
             if 1 <= user_choice < len(menu):
                 menu[user_choice][1](store_obj)
+            elif user_choice == len(menu):
+                break
             else:
                 raise Exception
         except Exception:
