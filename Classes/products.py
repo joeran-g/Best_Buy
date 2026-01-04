@@ -1,4 +1,4 @@
-from Best_Buy.Classes import promotions
+from . import promotions
 
 
 class Product:

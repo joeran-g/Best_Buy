@@ -1,4 +1,4 @@
-from Best_Buy.Classes import products
+from . import products
 
 
 class Store:
